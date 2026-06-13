@@ -1,123 +1,140 @@
 const sqlite3 = require('sqlite3').verbose();
+const { Pool } = require('pg');
 const path = require('path');
 const crypto = require('crypto');
 
-const dbPath = process.env.DATABASE_PATH || path.resolve(__dirname, 'database.db');
+let dbType = 'sqlite';
+let pgPool = null;
+let sqliteDb = null;
 
-// Connect to SQLite Database
-const db = new sqlite3.Database(dbPath, (err) => {
-  if (err) {
-    console.error('Error opening database:', err.message);
-  } else {
-    console.log('Connected to the SQLite database.');
-    initializeDatabase();
-  }
-});
+// Connect to Database based on environment
+if (process.env.DATABASE_URL) {
+  dbType = 'postgres';
+  pgPool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: process.env.DATABASE_URL.includes('localhost') ? false : { rejectUnauthorized: false }
+  });
+  console.log('Connected to PostgreSQL database.');
+  initializeDatabase();
+} else {
+  dbType = 'sqlite';
+  const dbPath = process.env.DATABASE_PATH || path.resolve(__dirname, 'database.db');
+  sqliteDb = new sqlite3.Database(dbPath, (err) => {
+    if (err) {
+      console.error('Error opening SQLite database:', err.message);
+    } else {
+      console.log('Connected to SQLite database.');
+      initializeDatabase();
+    }
+  });
+}
+
+// Helper to convert ? to $1, $2, etc. in PostgreSQL
+function translateSql(sql) {
+  if (dbType !== 'postgres') return sql;
+  let index = 1;
+  return sql.replace(/\?/g, () => `$${index++}`);
+}
+
+function initializeDatabase() {
+  const isPG = dbType === 'postgres';
+  const primaryKeyType = isPG ? 'SERIAL PRIMARY KEY' : 'INTEGER PRIMARY KEY AUTOINCREMENT';
+  const timestampType = 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP';
+
+  // 1. Create Users Table
+  run(`
+    CREATE TABLE IF NOT EXISTS users (
+      id ${primaryKeyType},
+      username VARCHAR(150) UNIQUE NOT NULL,
+      password_hash TEXT NOT NULL,
+      salt TEXT NOT NULL,
+      created_at ${timestampType}
+    )
+  `).then(() => {
+    setupDefaultAdmin();
+  }).catch(err => {
+    console.error('Error creating users table:', err.message);
+  });
+
+  // 2. Create Vehicles Table
+  run(`
+    CREATE TABLE IF NOT EXISTS vehicles (
+      id ${primaryKeyType},
+      brand VARCHAR(100) NOT NULL,
+      model VARCHAR(100) NOT NULL,
+      version VARCHAR(150),
+      price REAL NOT NULL,
+      year INTEGER NOT NULL,
+      mileage INTEGER NOT NULL,
+      fuel VARCHAR(50) NOT NULL,
+      transmission VARCHAR(50) NOT NULL,
+      power INTEGER,
+      engine_size INTEGER,
+      color VARCHAR(100),
+      description TEXT,
+      features TEXT, -- JSON array string
+      images TEXT,   -- JSON array string
+      created_at ${timestampType}
+    )
+  `).then(() => {
+    setupDefaultVehicles();
+  }).catch(err => {
+    console.error('Error creating vehicles table:', err.message);
+  });
+
+  // 3. Create Inquiries Table
+  run(`
+    CREATE TABLE IF NOT EXISTS inquiries (
+      id ${primaryKeyType},
+      vehicle_id INTEGER,
+      name VARCHAR(255) NOT NULL,
+      email VARCHAR(255) NOT NULL,
+      phone VARCHAR(50),
+      message TEXT NOT NULL,
+      status VARCHAR(50) DEFAULT 'new',
+      created_at ${timestampType},
+      FOREIGN KEY (vehicle_id) REFERENCES vehicles(id) ON DELETE SET NULL
+    )
+  `).catch(err => {
+    console.error('Error creating inquiries table:', err.message);
+  });
+}
 
 // Helper function to hash password
 function generateHash(password, salt) {
   return crypto.pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex');
 }
 
-function initializeDatabase() {
-  db.serialize(() => {
-    // 1. Create Users Table
-    db.run(`
-      CREATE TABLE IF NOT EXISTS users (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        username TEXT UNIQUE NOT NULL,
-        password_hash TEXT NOT NULL,
-        salt TEXT NOT NULL,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-      )
-    `, (err) => {
-      if (err) console.error('Error creating users table:', err.message);
-      else setupDefaultAdmin();
-    });
-
-    // 2. Create Vehicles Table
-    db.run(`
-      CREATE TABLE IF NOT EXISTS vehicles (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        brand TEXT NOT NULL,
-        model TEXT NOT NULL,
-        version TEXT,
-        price REAL NOT NULL,
-        year INTEGER NOT NULL,
-        mileage INTEGER NOT NULL,
-        fuel TEXT NOT NULL,
-        transmission TEXT NOT NULL,
-        power INTEGER,
-        engine_size INTEGER,
-        color TEXT,
-        description TEXT,
-        features TEXT, -- JSON array string
-        images TEXT,   -- JSON array string
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-      )
-    `, (err) => {
-      if (err) console.error('Error creating vehicles table:', err.message);
-      else setupDefaultVehicles();
-    });
-
-    // 3. Create Inquiries Table
-    db.run(`
-      CREATE TABLE IF NOT EXISTS inquiries (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        vehicle_id INTEGER,
-        name TEXT NOT NULL,
-        email TEXT NOT NULL,
-        phone TEXT,
-        message TEXT NOT NULL,
-        status TEXT DEFAULT 'new',
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (vehicle_id) REFERENCES vehicles(id) ON DELETE SET NULL
-      )
-    `, (err) => {
-      if (err) console.error('Error creating inquiries table:', err.message);
-    });
-  });
-}
-
 function setupDefaultAdmin() {
   const defaultUser = 'admin';
   const defaultPass = 'sacramento2026';
 
-  db.get('SELECT * FROM users WHERE username = ?', [defaultUser], (err, row) => {
-    if (err) {
-      console.error('Error checking admin user:', err.message);
-      return;
-    }
-
+  get('SELECT * FROM users WHERE username = ?', [defaultUser]).then(row => {
     if (!row) {
       const salt = crypto.randomBytes(16).toString('hex');
       const hash = generateHash(defaultPass, salt);
 
-      db.run(
+      run(
         'INSERT INTO users (username, password_hash, salt) VALUES (?, ?, ?)',
-        [defaultUser, hash, salt],
-        (insertErr) => {
-          if (insertErr) {
-            console.error('Error inserting default admin user:', insertErr.message);
-          } else {
-            console.log('Default admin user created successfully.');
-            console.log('Username: admin');
-            console.log('Password: sacramento2026');
-          }
-        }
-      );
+        [defaultUser, hash, salt]
+      ).then(() => {
+        console.log('Default admin user created successfully.');
+        console.log('Username: admin');
+        console.log('Password: sacramento2026');
+      }).catch(err => {
+        console.error('Error inserting default admin user:', err.message);
+      });
     }
+  }).catch(err => {
+    console.error('Error checking admin user:', err.message);
   });
 }
 
 function setupDefaultVehicles() {
-  db.get('SELECT COUNT(*) AS count FROM vehicles', [], (err, row) => {
-    if (err) {
-      console.error('Error checking vehicles count:', err.message);
-      return;
-    }
-
-    if (row && row.count === 0) {
+  get('SELECT COUNT(*) AS count FROM vehicles').then(row => {
+    const count = row ? (row.count !== undefined ? row.count : row.COUNT) : 0;
+    
+    if (parseInt(count) === 0) {
       const defaultVehicles = [
         {
           brand: 'Ford',
@@ -153,58 +170,92 @@ function setupDefaultVehicles() {
         }
       ];
 
-      const stmt = db.prepare(`
-        INSERT INTO vehicles (
-          brand, model, version, price, year, mileage, fuel,
-          transmission, power, engine_size, color, description, features, images
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-      `);
-
-      defaultVehicles.forEach(car => {
-        stmt.run([
-          car.brand, car.model, car.version, car.price, car.year, car.mileage, car.fuel,
-          car.transmission, car.power, car.engine_size, car.color, car.description, car.features, car.images
-        ], (err) => {
-          if (err) console.error('Error seeding vehicle:', err.message);
-        });
+      defaultVehicles.forEach(async (car) => {
+        try {
+          await run(`
+            INSERT INTO vehicles (
+              brand, model, version, price, year, mileage, fuel,
+              transmission, power, engine_size, color, description, features, images
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+          `, [
+            car.brand, car.model, car.version, car.price, car.year, car.mileage, car.fuel,
+            car.transmission, car.power, car.engine_size, car.color, car.description, car.features, car.images
+          ]);
+        } catch (err) {
+          console.error('Error seeding vehicle:', err.message);
+        }
       });
+      console.log('Database pre-populated with default vehicles.');
+    }
+  }).catch(err => {
+    console.error('Error checking vehicles count:', err.message);
+  });
+}
 
-      stmt.finalize(() => {
-        console.log('Database pre-populated with default premium vehicles.');
+// Wrapper utility functions for database queries (promisified)
+function get(sql, params = []) {
+  const finalSql = translateSql(sql);
+  return new Promise((resolve, reject) => {
+    if (dbType === 'postgres') {
+      pgPool.query(finalSql, params, (err, res) => {
+        if (err) reject(err);
+        else resolve(res.rows && res.rows[0] ? res.rows[0] : null);
+      });
+    } else {
+      sqliteDb.get(finalSql, params, (err, row) => {
+        if (err) reject(err);
+        else resolve(row);
       });
     }
   });
 }
 
-
-// Wrapper utility functions for database queries (promisified)
-const dbQuery = {
-  get(sql, params = []) {
-    return new Promise((resolve, reject) => {
-      db.get(sql, params, (err, result) => {
+function all(sql, params = []) {
+  const finalSql = translateSql(sql);
+  return new Promise((resolve, reject) => {
+    if (dbType === 'postgres') {
+      pgPool.query(finalSql, params, (err, res) => {
         if (err) reject(err);
-        else resolve(result);
+        else resolve(res.rows);
       });
-    });
-  },
-  all(sql, params = []) {
-    return new Promise((resolve, reject) => {
-      db.all(sql, params, (err, rows) => {
+    } else {
+      sqliteDb.all(finalSql, params, (err, rows) => {
         if (err) reject(err);
         else resolve(rows);
       });
-    });
-  },
-  run(sql, params = []) {
-    return new Promise((resolve, reject) => {
-      db.run(sql, params, function (err) {
+    }
+  });
+}
+
+function run(sql, params = []) {
+  let finalSql = translateSql(sql);
+  
+  // PostgreSQL handles auto-generated IDs differently (requires RETURNING clause)
+  if (dbType === 'postgres' && sql.trim().toUpperCase().startsWith('INSERT ')) {
+    finalSql += ' RETURNING id';
+  }
+
+  return new Promise((resolve, reject) => {
+    if (dbType === 'postgres') {
+      pgPool.query(finalSql, params, (err, res) => {
+        if (err) reject(err);
+        else {
+          const id = res.rows && res.rows[0] ? (res.rows[0].id || res.rows[0].insertid) : null;
+          resolve({ id: id, changes: res.rowCount });
+        }
+      });
+    } else {
+      sqliteDb.run(finalSql, params, function (err) {
         if (err) reject(err);
         else resolve({ id: this.lastID, changes: this.changes });
       });
-    });
-  },
-  generateHash,
-  dbInstance: db
-};
+    }
+  });
+}
 
-module.exports = dbQuery;
+module.exports = {
+  get,
+  all,
+  run,
+  generateHash
+};
