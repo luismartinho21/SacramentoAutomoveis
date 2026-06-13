@@ -2,7 +2,7 @@ const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const crypto = require('crypto');
 
-const dbPath = path.resolve(__dirname, 'database.db');
+const dbPath = process.env.DATABASE_PATH || path.resolve(__dirname, 'database.db');
 
 // Connect to SQLite Database
 const db = new sqlite3.Database(dbPath, (err) => {

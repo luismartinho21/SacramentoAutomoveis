@@ -13,7 +13,7 @@ const PORT = process.env.PORT || 3000;
 const sessions = {};
 
 // Ensure upload directory exists
-const uploadDir = path.join(__dirname, 'public', 'uploads', 'vehicles');
+const uploadDir = process.env.UPLOADS_PATH || path.join(__dirname, 'public', 'uploads', 'vehicles');
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
@@ -25,6 +25,7 @@ app.use(cookieParser());
 
 // Serve static frontend files
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/uploads/vehicles', express.static(uploadDir));
 
 // Configure Multer for image uploads
 const storage = multer.diskStorage({
