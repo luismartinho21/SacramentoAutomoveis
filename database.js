@@ -36,68 +36,65 @@ function translateSql(sql) {
   return sql.replace(/\?/g, () => `$${index++}`);
 }
 
-function initializeDatabase() {
+async function initializeDatabase() {
   const isPG = dbType === 'postgres';
   const primaryKeyType = isPG ? 'SERIAL PRIMARY KEY' : 'INTEGER PRIMARY KEY AUTOINCREMENT';
   const timestampType = 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP';
 
-  // 1. Create Users Table
-  run(`
-    CREATE TABLE IF NOT EXISTS users (
-      id ${primaryKeyType},
-      username VARCHAR(150) UNIQUE NOT NULL,
-      password_hash TEXT NOT NULL,
-      salt TEXT NOT NULL,
-      created_at ${timestampType}
-    )
-  `).then(() => {
-    setupDefaultAdmin();
-  }).catch(err => {
-    console.error('Error creating users table:', err.message);
-  });
+  try {
+    // 1. Create Users Table
+    await run(`
+      CREATE TABLE IF NOT EXISTS users (
+        id ${primaryKeyType},
+        username VARCHAR(150) UNIQUE NOT NULL,
+        password_hash TEXT NOT NULL,
+        salt TEXT NOT NULL,
+        created_at ${timestampType}
+      )
+    `);
+    await setupDefaultAdmin();
 
-  // 2. Create Vehicles Table
-  run(`
-    CREATE TABLE IF NOT EXISTS vehicles (
-      id ${primaryKeyType},
-      brand VARCHAR(100) NOT NULL,
-      model VARCHAR(100) NOT NULL,
-      version VARCHAR(150),
-      price REAL NOT NULL,
-      year INTEGER NOT NULL,
-      mileage INTEGER NOT NULL,
-      fuel VARCHAR(50) NOT NULL,
-      transmission VARCHAR(50) NOT NULL,
-      power INTEGER,
-      engine_size INTEGER,
-      color VARCHAR(100),
-      description TEXT,
-      features TEXT, -- JSON array string
-      images TEXT,   -- JSON array string
-      created_at ${timestampType}
-    )
-  `).then(() => {
-    setupDefaultVehicles();
-  }).catch(err => {
-    console.error('Error creating vehicles table:', err.message);
-  });
+    // 2. Create Vehicles Table
+    await run(`
+      CREATE TABLE IF NOT EXISTS vehicles (
+        id ${primaryKeyType},
+        brand VARCHAR(100) NOT NULL,
+        model VARCHAR(100) NOT NULL,
+        version VARCHAR(150),
+        price REAL NOT NULL,
+        year INTEGER NOT NULL,
+        mileage INTEGER NOT NULL,
+        fuel VARCHAR(50) NOT NULL,
+        transmission VARCHAR(50) NOT NULL,
+        power INTEGER,
+        engine_size INTEGER,
+        color VARCHAR(100),
+        description TEXT,
+        features TEXT, -- JSON array string
+        images TEXT,   -- JSON array string
+        created_at ${timestampType}
+      )
+    `);
+    await setupDefaultVehicles();
 
-  // 3. Create Inquiries Table
-  run(`
-    CREATE TABLE IF NOT EXISTS inquiries (
-      id ${primaryKeyType},
-      vehicle_id INTEGER,
-      name VARCHAR(255) NOT NULL,
-      email VARCHAR(255) NOT NULL,
-      phone VARCHAR(50),
-      message TEXT NOT NULL,
-      status VARCHAR(50) DEFAULT 'new',
-      created_at ${timestampType},
-      FOREIGN KEY (vehicle_id) REFERENCES vehicles(id) ON DELETE SET NULL
-    )
-  `).catch(err => {
-    console.error('Error creating inquiries table:', err.message);
-  });
+    // 3. Create Inquiries Table
+    await run(`
+      CREATE TABLE IF NOT EXISTS inquiries (
+        id ${primaryKeyType},
+        vehicle_id INTEGER,
+        name VARCHAR(255) NOT NULL,
+        email VARCHAR(255) NOT NULL,
+        phone VARCHAR(50),
+        message TEXT NOT NULL,
+        status VARCHAR(50) DEFAULT 'new',
+        created_at ${timestampType},
+        FOREIGN KEY (vehicle_id) REFERENCES vehicles(id) ON DELETE SET NULL
+      )
+    `);
+    console.log('Database initialization completed successfully.');
+  } catch (err) {
+    console.error('Database initialization error:', err.message);
+  }
 }
 
 // Helper function to hash password
@@ -105,33 +102,32 @@ function generateHash(password, salt) {
   return crypto.pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex');
 }
 
-function setupDefaultAdmin() {
+async function setupDefaultAdmin() {
   const defaultUser = 'VitorSacramento';
   const defaultPass = 'sacramento.2026';
 
-  get('SELECT * FROM users WHERE username = ?', [defaultUser]).then(row => {
+  try {
+    const row = await get('SELECT * FROM users WHERE username = ?', [defaultUser]);
     if (!row) {
       const salt = crypto.randomBytes(16).toString('hex');
       const hash = generateHash(defaultPass, salt);
 
-      run(
+      await run(
         'INSERT INTO users (username, password_hash, salt) VALUES (?, ?, ?)',
         [defaultUser, hash, salt]
-      ).then(() => {
-        console.log('Default admin user created successfully.');
-        console.log('Username: ' + defaultUser);
-        console.log('Password: ' + defaultPass);
-      }).catch(err => {
-        console.error('Error inserting default admin user:', err.message);
-      });
+      );
+      console.log('Default admin user created successfully.');
+      console.log('Username: ' + defaultUser);
+      console.log('Password: ' + defaultPass);
     }
-  }).catch(err => {
-    console.error('Error checking admin user:', err.message);
-  });
+  } catch (err) {
+    console.error('Error setting up default admin user:', err.message);
+  }
 }
 
-function setupDefaultVehicles() {
-  get('SELECT COUNT(*) AS count FROM vehicles').then(row => {
+async function setupDefaultVehicles() {
+  try {
+    const row = await get('SELECT COUNT(*) AS count FROM vehicles');
     const count = row ? (row.count !== undefined ? row.count : row.COUNT) : 0;
     
     if (parseInt(count) === 0) {
@@ -170,26 +166,22 @@ function setupDefaultVehicles() {
         }
       ];
 
-      defaultVehicles.forEach(async (car) => {
-        try {
-          await run(`
-            INSERT INTO vehicles (
-              brand, model, version, price, year, mileage, fuel,
-              transmission, power, engine_size, color, description, features, images
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-          `, [
-            car.brand, car.model, car.version, car.price, car.year, car.mileage, car.fuel,
-            car.transmission, car.power, car.engine_size, car.color, car.description, car.features, car.images
-          ]);
-        } catch (err) {
-          console.error('Error seeding vehicle:', err.message);
-        }
-      });
+      for (const car of defaultVehicles) {
+        await run(`
+          INSERT INTO vehicles (
+            brand, model, version, price, year, mileage, fuel,
+            transmission, power, engine_size, color, description, features, images
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `, [
+          car.brand, car.model, car.version, car.price, car.year, car.mileage, car.fuel,
+          car.transmission, car.power, car.engine_size, car.color, car.description, car.features, car.images
+        ]);
+      }
       console.log('Database pre-populated with default vehicles.');
     }
-  }).catch(err => {
-    console.error('Error checking vehicles count:', err.message);
-  });
+  } catch (err) {
+    console.error('Error setting up default vehicles:', err.message);
+  }
 }
 
 // Wrapper utility functions for database queries (promisified)

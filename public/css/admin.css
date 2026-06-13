@@ -57,6 +57,7 @@
 .admin-header {
   border-bottom: 1px solid var(--border-color);
   background-color: var(--bg-secondary);
+  transition: var(--transition-fast);
 }
 
 .admin-nav {
@@ -64,6 +65,7 @@
   justify-content: space-between;
   align-items: center;
   height: 80px;
+  transition: var(--transition-fast);
 }
 
 .admin-title-row {
@@ -80,6 +82,59 @@
   padding: 4px 8px;
   border-radius: var(--border-radius-sm);
   text-transform: uppercase;
+  white-space: nowrap;
+}
+
+#btn-logout {
+  padding: 8px 16px;
+  font-size: 13px;
+  transition: var(--transition-fast);
+}
+
+/* Responsive Admin Header */
+@media (max-width: 768px) {
+  .admin-nav {
+    height: 70px;
+    padding: 0 16px;
+  }
+  
+  .admin-title-row {
+    gap: 10px;
+  }
+  
+  .admin-badge {
+    font-size: 9px;
+    padding: 2px 6px;
+  }
+  
+  #btn-logout {
+    padding: 8px;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  #btn-logout span {
+    display: none;
+  }
+  
+  #btn-logout svg, #btn-logout i {
+    margin: 0;
+  }
+}
+
+@media (max-width: 576px) {
+  .admin-nav {
+    height: 60px;
+    padding: 0 10px;
+  }
+  
+  .admin-badge {
+    display: none;
+  }
 }
 
 /* Tab Layout */
