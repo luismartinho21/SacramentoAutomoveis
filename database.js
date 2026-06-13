@@ -106,8 +106,8 @@ function generateHash(password, salt) {
 }
 
 function setupDefaultAdmin() {
-  const defaultUser = 'admin';
-  const defaultPass = 'sacramento2026';
+  const defaultUser = 'VitorSacramento';
+  const defaultPass = 'sacramento.2026';
 
   get('SELECT * FROM users WHERE username = ?', [defaultUser]).then(row => {
     if (!row) {
@@ -119,8 +119,8 @@ function setupDefaultAdmin() {
         [defaultUser, hash, salt]
       ).then(() => {
         console.log('Default admin user created successfully.');
-        console.log('Username: admin');
-        console.log('Password: sacramento2026');
+        console.log('Username: ' + defaultUser);
+        console.log('Password: ' + defaultPass);
       }).catch(err => {
         console.error('Error inserting default admin user:', err.message);
       });

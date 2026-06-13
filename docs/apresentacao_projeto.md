@@ -42,8 +42,8 @@ Para apresentar o projeto ao cliente na sua máquina local:
 * **Endereço do Site (Público)**: [http://localhost:3000](http://localhost:3000)
 * **Endereço do Painel do Vendedor**: [http://localhost:3000/admin.html](http://localhost:3000/admin.html)
 * **Credenciais de Acesso**:
-  * **Utilizador**: `admin`
-  * **Palavra-passe**: `sacramento2026`
+  * **Utilizador**: `VitorSacramento`
+  * **Palavra-passe**: `sacramento.2026`
 
 ---
 
@@ -74,7 +74,7 @@ Se o proprietário do stand aprovar o projeto, o plano de implementação online
 2. **Alojamento no Render (Gratuito / Baixo Custo)**:
    * Cria-se uma conta gratuita no [Render.com](https://render.com).
    * Associa-se o repositório GitHub para publicação automática (sempre que fizer alterações no código, o site atualiza-se sozinho online).
-   * Configura-se um **Volume Persistente de Disco** no Render (de forma a que a base de dados SQLite e as fotos enviadas pelo stand não desapareçam quando o servidor reiniciar).
+   * Configura-se uma **Base de Dados PostgreSQL gratuita** (na Neon ou Supabase) ou um volume de disco para que os dados do stand e as fotos fiquem guardados permanentemente de forma gratuita.
 3. **Domínio Personalizado**:
-   * Compra-se o domínio (ex: `sacramentoautomoveis.pt` ou similar) numa entidade registadora (ex: Amen, Dominios.pt, PTISP).
+   * Compra-se o domínio (ex: `automoveissacramento.pt`) na entidade registadora (como a Amen, onde já existe conta).
    * Aponta-se o domínio para o servidor do Render, ativando o certificado de segurança SSL gratuito (o cadeado verde `https://`).

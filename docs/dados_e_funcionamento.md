@@ -22,11 +22,17 @@ Este email é a chave mestre para gerir o domínio, o alojamento no Render e a b
 * **Palavra-passe**: `Sacramento`
 * **Data de Nascimento associada**: `22-08-2000`
 
-### 2. Painel Administrativo do Stand (Gestão do Site)
+### 2. Painel de Controlo de Domínio (Amen.pt)
+Controlo de registo do domínio `automoveissacramento.pt` e apontamento DNS.
+* **UserID**: `Automoveis`
+* **Password**: `Sacramento`
+
+### 3. Painel Administrativo do Stand (Gestão do Site)
+Acesso ao Back-Office de gestão de veículos e mensagens.
 * **Link Local (Demonstração)**: [http://localhost:3000/admin.html](http://localhost:3000/admin.html)
 * **Link Online (Após publicação)**: `https://www.automoveissacramento.pt/admin.html`
-* **Utilizador**: `admin`
-* **Palavra-passe**: `sacramento2026`
+* **Utilizador**: `VitorSacramento`
+* **Palavra-passe**: `sacramento.2026`
 
 ---
 

@@ -293,7 +293,7 @@ async function openCarDetails(carId) {
     if (waBtn) {
       waBtn.onclick = () => {
         const text = encodeURIComponent(`Olá! Estou interessado na viatura ${car.brand} ${car.model} (${car.year}) anunciada por ${formattedPrice}. Gostaria de obter mais informações.`);
-        window.open(`https://wa.me/351912345678?text=${text}`, '_blank');
+        window.open(`https://wa.me/351964637007?text=${text}`, '_blank');
       };
     }
 
