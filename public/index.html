@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sacramento Automóveis | Stand Automóvel Premium</title>
+  <meta name="description" content="Encontre o seu veículo premium no stand Sacramento Automóveis. Consulta de stock de viaturas usadas de luxo e contacto facilitado.">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/client.css">
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="glass">
+    <div class="container">
+      <a href="#" class="logo">
+        <img src="img/logo.jpg" alt="Logo Sacramento" style="height: 40px; border-radius: var(--border-radius-sm); object-fit: contain;">
+        Sacramento <span>Automóveis</span>
+      </a>
+      <nav>
+        <a href="#stock" class="active">Stock</a>
+        <a href="#contactos">Contactos</a>
+        <a href="admin.html" class="btn btn-secondary" style="padding: 8px 16px; font-size: 13px;">
+          <i data-lucide="user"></i> Área do Vendedor
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- HERO SECTION -->
+  <section class="hero">
+    <div class="hero-content">
+      <span class="hero-subtitle">Experiência & Confiança</span>
+      <h1>Encontre o Seu Próximo Carro de Sonho</h1>
+      <p>Uma seleção rigorosa de viaturas usadas premium e seminovas, com garantia de qualidade e transparência.</p>
+      <a href="#stock" class="btn btn-primary">
+        Ver Viaturas Disponíveis <i data-lucide="arrow-right"></i>
+      </a>
+    </div>
+  </section>
+
+  <!-- MAIN CATALOG & FILTER -->
+  <div class="container" style="position: relative;">
+    
+    <!-- Filter Panel -->
+    <section class="filter-section">
+      <div class="filter-card glass">
+        <div class="filter-grid">
+          
+          <div class="filter-group">
+            <label for="filter-brand">Marca</label>
+            <select id="filter-brand" class="filter-select">
+              <option value="">Todas as marcas</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label for="filter-fuel">Combustível</label>
+            <select id="filter-fuel" class="filter-select">
+              <option value="">Todos</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label for="filter-transmission">Caixa</label>
+            <select id="filter-transmission" class="filter-select">
+              <option value="">Todas</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label for="filter-max-price">Preço Máximo (€)</label>
+            <input type="number" id="filter-max-price" class="filter-input" placeholder="Ex: 50000">
+          </div>
+
+        </div>
+
+        <div class="filter-actions">
+          <button id="btn-clear-filters" class="btn btn-secondary">
+            <i data-lucide="rotate-ccw"></i> Limpar Filtros
+          </button>
+          <button id="btn-apply-filters" class="btn btn-primary">
+            <i data-lucide="sliders-horizontal"></i> Filtrar Stock
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Listings Catalog -->
+    <section id="stock" style="padding-top: 40px; padding-bottom: 80px;">
+      <div class="catalog-header">
+        <div>
+          <h2>O Nosso Stock</h2>
+          <div class="catalog-info" id="catalog-count">Carregando viaturas...</div>
+        </div>
+        <div>
+          <select id="sort-by" class="sort-select">
+            <option value="newest">Mais Recentes</option>
+            <option value="price_asc">Preço: Baixo para Alto</option>
+            <option value="price_desc">Preço: Alto para Baixo</option>
+            <option value="year_desc">Ano: Mais Recentes</option>
+            <option value="mileage_asc">Quilómetros: Menores</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Grid of vehicles -->
+      <div class="vehicles-grid" id="vehicles-grid">
+        <!-- Rendered dynamically via JS -->
+      </div>
+    </section>
+  </div>
+
+  <!-- CONTACT & FOOTER -->
+  <section id="contactos" style="background-color: var(--bg-secondary); padding: 80px 0; border-top: 1px solid var(--border-color);">
+    <div class="container">
+      <div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 60px; align-items: start;">
+        
+        <!-- Info Column -->
+        <div>
+          <span style="color: var(--accent); font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: 0.1em; display: block; margin-bottom: 16px;">Contacte-nos</span>
+          <h2 style="font-size: 36px; margin-bottom: 24px;">Tem Alguma Questão?</h2>
+          <p style="margin-bottom: 40px;">Se deseja obter mais informações sobre alguma das nossas viaturas, agendar um test drive ou esclarecer dúvidas de financiamento, envie-nos uma mensagem. Respondemos com a maior brevidade.</p>
+          
+          <div style="display: flex; flex-direction: column; gap: 24px;">
+            <div style="display: flex; gap: 16px; align-items: flex-start;">
+              <div style="background-color: rgba(212,175,55,0.1); width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--accent); flex-shrink: 0;">
+                <i data-lucide="phone"></i>
+              </div>
+              <div>
+                <h4 style="font-size: 16px; margin-bottom: 4px;">Telemóvel / WhatsApp</h4>
+                <p style="color: var(--text-primary); font-weight: 600;">+351 912 345 678</p>
+                <p style="font-size: 13px;">(Chamada para a rede móvel nacional)</p>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 16px; align-items: flex-start;">
+              <div style="background-color: rgba(212,175,55,0.1); width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--accent); flex-shrink: 0;">
+                <i data-lucide="mail"></i>
+              </div>
+              <div>
+                <h4 style="font-size: 16px; margin-bottom: 4px;">E-mail</h4>
+                <p style="color: var(--text-primary); font-weight: 600;">geral@sacramentoautomoveis.pt</p>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 16px; align-items: flex-start;">
+              <div style="background-color: rgba(212,175,55,0.1); width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--accent); flex-shrink: 0;">
+                <i data-lucide="map-pin"></i>
+              </div>
+              <div>
+                <h4 style="font-size: 16px; margin-bottom: 4px;">Localização</h4>
+                <p style="color: var(--text-primary); font-weight: 600;">Avenida da República, 1000-001 Lisboa</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- General Contact Form -->
+        <div class="glass" style="padding: 40px; border-radius: var(--border-radius-lg); box-shadow: var(--shadow-md);">
+          <h3 style="margin-bottom: 24px; font-size: 20px;">Formulário de Contacto</h3>
+          
+          <form id="general-contact-form">
+            <div id="general-form-success" style="background-color: rgba(37, 211, 102, 0.1); border: 1px solid rgba(37, 211, 102, 0.2); color: #25d366; padding: 16px; border-radius: var(--border-radius-md); margin-bottom: 20px; font-size: 14px; display: none;">
+              Mensagem enviada com sucesso! Entraremos em contacto brevemente.
+            </div>
+            
+            <div id="general-form-error" style="background-color: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); color: #ef4444; padding: 16px; border-radius: var(--border-radius-md); margin-bottom: 20px; font-size: 14px; display: none;">
+              Ocorreu um erro ao enviar a mensagem.
+            </div>
+
+            <div class="form-group">
+              <label for="contact-name" class="form-label">Nome Completo *</label>
+              <input type="text" id="contact-name" class="form-input" placeholder="O seu nome" required>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="contact-email" class="form-label">Email *</label>
+                <input type="email" id="contact-email" class="form-input" placeholder="exemplo@email.com" required>
+              </div>
+              <div class="form-group">
+                <label for="contact-phone" class="form-label">Contacto Telefónico</label>
+                <input type="tel" id="contact-phone" class="form-input" placeholder="9xxxxxxxx">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="contact-message" class="form-label">Mensagem *</label>
+              <textarea id="contact-message" class="form-input" placeholder="Escreva aqui a sua mensagem..." required></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%;">
+              Enviar Mensagem <i data-lucide="send"></i>
+            </button>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- VEHICLE DETAIL MODAL -->
+  <div class="modal-backdrop" id="car-modal">
+    <div class="modal-container">
+      <button class="modal-close-btn" id="modal-close"><i data-lucide="x"></i></button>
+      
+      <div class="modal-grid">
+        
+        <!-- Left: Image Slider -->
+        <div class="modal-gallery">
+          <div class="gallery-main">
+            <img id="modal-gallery-img" src="" alt="Foto Principal">
+            <button class="gallery-nav gallery-nav-prev" id="gallery-prev"><i data-lucide="chevron-left"></i></button>
+            <button class="gallery-nav gallery-nav-next" id="gallery-next"><i data-lucide="chevron-right"></i></button>
+          </div>
+          <div class="gallery-thumbnails" id="modal-gallery-thumbs">
+            <!-- Thumbs rendered dynamically -->
+          </div>
+        </div>
+
+        <!-- Right: Information & Inquire -->
+        <div class="modal-info">
+          
+          <div class="modal-brand-row">
+            <h1 id="modal-title">Marca Modelo</h1>
+            <div class="version" id="modal-version">Versão</div>
+          </div>
+
+          <div class="modal-price-box">
+            <span class="price-label">Preço Final</span>
+            <span class="price-val" id="modal-price">€ 0.000</span>
+          </div>
+
+          <!-- Quick specs -->
+          <h3 class="specs-section-title">Caraterísticas</h3>
+          <div class="modal-specs-grid">
+            
+            <div class="modal-spec-row">
+              <span>Ano Registo</span>
+              <span id="spec-year">2023</span>
+            </div>
+
+            <div class="modal-spec-row">
+              <span>Quilómetros</span>
+              <span id="spec-mileage">0 km</span>
+            </div>
+
+            <div class="modal-spec-row">
+              <span>Combustível</span>
+              <span id="spec-fuel">Gasolina</span>
+            </div>
+
+            <div class="modal-spec-row">
+              <span>Transmissão</span>
+              <span id="spec-transmission">Automática</span>
+            </div>
+
+            <div class="modal-spec-row">
+              <span>Potência</span>
+              <span id="spec-power">0 cv</span>
+            </div>
+
+            <div class="modal-spec-row">
+              <span>Cilindrada</span>
+              <span id="spec-engine">0 cc</span>
+            </div>
+
+            <div class="modal-spec-row">
+              <span>Cor Exterior</span>
+              <span id="spec-color">Preto</span>
+            </div>
+
+          </div>
+
+          <!-- Features tags -->
+          <h3 class="specs-section-title">Equipamento em Destaque</h3>
+          <div class="features-container" id="modal-features">
+            <!-- Dynamic tags -->
+          </div>
+
+          <!-- Description text -->
+          <h3 class="specs-section-title">Descrição Adicional</h3>
+          <div class="description-container">
+            <p id="modal-description">A carregar descrição...</p>
+          </div>
+
+          <!-- Contact section for this car -->
+          <div class="modal-contact-section">
+            <h3>Ficou Interessado nesta viatura?</h3>
+            <p>Esclareça todas as suas dúvidas diretamente com o nosso consultor comercial.</p>
+            
+            <form id="modal-contact-form">
+              <input type="hidden" id="modal-car-id" value="">
+              
+              <div id="modal-form-success" style="background-color: rgba(37, 211, 102, 0.1); border: 1px solid rgba(37, 211, 102, 0.2); color: #25d366; padding: 12px; border-radius: var(--border-radius-md); margin-bottom: 16px; font-size: 14px; display: none;">
+                O seu interesse foi registado! Entraremos em contacto em breve.
+              </div>
+
+              <div id="modal-form-error" style="background-color: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); color: #ef4444; padding: 12px; border-radius: var(--border-radius-md); margin-bottom: 16px; font-size: 14px; display: none;">
+                Erro ao enviar dados. Tente novamente.
+              </div>
+
+              <div class="form-group">
+                <label for="modal-input-name" class="form-label">Nome Completo *</label>
+                <input type="text" id="modal-input-name" class="form-input" required>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="modal-input-email" class="form-label">Email *</label>
+                  <input type="email" id="modal-input-email" class="form-input" required>
+                </div>
+                <div class="form-group">
+                  <label for="modal-input-phone" class="form-label">Telemóvel</label>
+                  <input type="tel" id="modal-input-phone" class="form-input">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="modal-input-message" class="form-label">Mensagem *</label>
+                <textarea id="modal-input-message" class="form-input" required>Olá, gostaria de obter mais informações sobre esta viatura.</textarea>
+              </div>
+
+              <div class="contact-buttons-row">
+                <button type="button" class="btn btn-whatsapp" id="btn-modal-whatsapp">
+                  <i data-lucide="message-square"></i> WhatsApp
+                </button>
+                <button type="submit" class="btn btn-primary">
+                  Enviar Mensagem <i data-lucide="send"></i>
+                </button>
+              </div>
+            </form>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <a href="#" class="logo" style="margin-bottom: 20px;">
+            Sacramento <span>Automóveis</span>
+          </a>
+          <p>Dedicados ao mercado de automóveis premium, oferecemos aos nossos clientes um serviço exclusivo focado na transparência, confiança e total satisfação.</p>
+        </div>
+        <div class="footer-col">
+          <h3>Links Rápidos</h3>
+          <ul>
+            <li><a href="#stock">Stock Online</a></li>
+            <li><a href="#contactos">Contactos</a></li>
+            <li><a href="admin.html">Painel Administrativo</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h3>Horário</h3>
+          <ul style="font-size: 14px; color: var(--text-secondary);">
+            <li style="margin-bottom: 8px;">Segunda a Sexta:<br><strong style="color:#fff;">09:30h - 19:00h</strong></li>
+            <li style="margin-bottom: 8px;">Sábado:<br><strong style="color:#fff;">10:00h - 18:00h</strong></li>
+            <li>Domingo e Feriados:<br><strong style="color:var(--accent);">Sob Marcação</strong></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h3>Informação Legal</h3>
+          <p style="font-size: 13px; margin-bottom: 12px;">Intermediário de Crédito a título acessório registado no Banco de Portugal sob o nº 000000.</p>
+          <p style="font-size: 13px;">Preços com IVA incluído à taxa legal em vigor.</p>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <p>&copy; 2026 Sacramento Automóveis. Todos os direitos reservados.</p>
+        <p>Desenvolvido para Sacramento Automóveis</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/client.js"></script>
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+  </script>
+</body>
+</html>

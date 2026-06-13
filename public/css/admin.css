@@ -1,0 +1,495 @@
+/* --- ADMIN LOGIN PANEL --- */
+.login-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--bg-primary);
+  background: radial-gradient(circle at center, var(--bg-tertiary) 0%, var(--bg-primary) 100%);
+  z-index: 2000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-lg);
+  padding: 40px;
+  box-shadow: var(--shadow-lg);
+  text-align: center;
+}
+
+.login-header h2 {
+  font-size: 26px;
+  font-weight: 800;
+  margin-top: 16px;
+  margin-bottom: 8px;
+}
+
+.login-header p {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin-bottom: 32px;
+}
+
+.login-form {
+  text-align: left;
+}
+
+.login-error {
+  background-color: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+  padding: 12px;
+  border-radius: var(--border-radius-md);
+  font-size: 14px;
+  margin-bottom: 20px;
+  display: none;
+}
+
+/* --- ADMIN LAYOUT --- */
+.admin-header {
+  border-bottom: 1px solid var(--border-color);
+  background-color: var(--bg-secondary);
+}
+
+.admin-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 80px;
+}
+
+.admin-title-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.admin-badge {
+  background-color: rgba(212,175,55,0.1);
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: var(--border-radius-sm);
+  text-transform: uppercase;
+}
+
+/* Tab Layout */
+.admin-tabs {
+  display: flex;
+  gap: 8px;
+  border-bottom: 1px solid var(--border-color);
+  margin-top: 40px;
+  margin-bottom: 32px;
+}
+
+.admin-tab-btn {
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--text-secondary);
+  padding: 12px 24px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.admin-tab-btn:hover {
+  color: var(--text-primary);
+}
+
+.admin-tab-btn.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+.admin-panel-content {
+  display: none;
+}
+
+.admin-panel-content.active {
+  display: block;
+}
+
+/* Dashboard Section Header */
+.panel-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.panel-header-row h2 {
+  font-size: 24px;
+  font-weight: 700;
+}
+
+/* --- VEHICLE INVENTORY LIST --- */
+.admin-table-container {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-lg);
+  overflow-x: auto;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 40px;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 14px;
+}
+
+.admin-table th {
+  background-color: rgba(255,255,255,0.02);
+  color: var(--text-primary);
+  font-weight: 600;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.admin-table td {
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  vertical-align: middle;
+}
+
+.admin-table tr:last-child td {
+  border-bottom: none;
+}
+
+.admin-car-info {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.admin-car-thumb {
+  width: 60px;
+  height: 40px;
+  border-radius: var(--border-radius-sm);
+  object-fit: cover;
+  background-color: var(--bg-tertiary);
+}
+
+.admin-car-title {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.admin-car-version {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.price-text {
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.actions-cell {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--border-radius-md);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: 1px solid var(--border-color);
+  background-color: transparent;
+  color: var(--text-secondary);
+  transition: var(--transition-fast);
+}
+.btn-icon:hover {
+  border-color: var(--text-muted);
+  color: var(--text-primary);
+}
+.btn-icon.edit:hover {
+  background-color: rgba(212,175,55,0.1);
+  color: var(--accent);
+  border-color: rgba(212,175,55,0.3);
+}
+.btn-icon.delete:hover {
+  background-color: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+/* --- INQUIRIES LIST --- */
+.inquiry-status {
+  display: inline-flex;
+  padding: 4px 10px;
+  border-radius: 50px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.inquiry-status.new {
+  background-color: rgba(59, 130, 246, 0.15);
+  color: #3b82f6;
+}
+
+.inquiry-status.read {
+  background-color: rgba(161, 161, 170, 0.15);
+  color: #a1a1aa;
+}
+
+.inquiry-status.archived {
+  background-color: rgba(245, 158, 11, 0.15);
+  color: #f59e0b;
+}
+
+.message-text {
+  max-width: 300px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.inquiry-car-ref {
+  display: flex;
+  flex-direction: column;
+}
+.inquiry-car-ref span:first-child {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.inquiry-car-ref span:last-child {
+  font-size: 12px;
+  color: var(--accent);
+}
+
+/* --- MODAL FORM STYLING --- */
+.admin-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(8px);
+  z-index: 1500;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition-normal);
+  padding: 24px;
+}
+
+.admin-modal.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.admin-modal-container {
+  width: 100%;
+  max-width: 800px;
+  max-height: 90vh;
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-lg);
+  overflow-y: auto;
+  position: relative;
+  transform: scale(0.95);
+  transition: transform var(--transition-normal);
+  box-shadow: var(--shadow-lg);
+}
+
+.admin-modal.active .admin-modal-container {
+  transform: scale(1);
+}
+
+.admin-modal-header {
+  padding: 24px 32px;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.admin-modal-header h3 {
+  font-size: 20px;
+}
+
+.admin-modal-close {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition-fast);
+}
+.admin-modal-close:hover {
+  color: var(--text-primary);
+}
+
+.admin-modal-body {
+  padding: 32px;
+}
+
+.admin-modal-footer {
+  padding: 24px 32px;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+}
+
+/* Grid layout for Forms */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+@media (max-width: 768px) {
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+}
+
+/* Features checklist admin form */
+.features-checkbox-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+  margin-top: 10px;
+  padding: 16px;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-md);
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.checkbox-label input[type="checkbox"] {
+  accent-color: var(--accent);
+  width: 16px;
+  height: 16px;
+}
+
+/* File Upload styling */
+.file-upload-zone {
+  border: 2px dashed var(--border-color);
+  border-radius: var(--border-radius-md);
+  padding: 30px;
+  text-align: center;
+  background-color: var(--bg-secondary);
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.file-upload-zone:hover {
+  border-color: var(--accent);
+  background-color: var(--bg-tertiary);
+}
+
+.file-upload-zone svg {
+  color: var(--text-muted);
+  margin-bottom: 12px;
+}
+
+.file-upload-zone p {
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.file-upload-zone span {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.image-previews-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.image-preview-item {
+  width: 100px;
+  height: 80px;
+  border-radius: var(--border-radius-sm);
+  position: relative;
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+}
+
+.image-preview-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.remove-img-btn {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 20px;
+  height: 20px;
+  background-color: rgba(239, 68, 68, 0.85);
+  border: none;
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+/* Message View Modal specific styling */
+.inquiry-detail-modal-body p {
+  margin-bottom: 16px;
+  font-size: 15px;
+}
+
+.inquiry-detail-modal-body strong {
+  color: var(--text-primary);
+}
+
+.inquiry-message-content {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  padding: 20px;
+  border-radius: var(--border-radius-md);
+  font-size: 14px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  margin-top: 8px;
+}

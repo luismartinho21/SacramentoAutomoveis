@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel do Vendedor | Sacramento Automóveis</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/admin.css">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+  <!-- ADMIN LOGIN PANEL OVERLAY -->
+  <div class="login-backdrop" id="login-panel">
+    <div class="login-card glass">
+      <div class="login-header">
+        <a href="index.html" class="logo" style="justify-content: center; font-size: 28px;">
+          <img src="img/logo.jpg" alt="Logo Sacramento" style="height: 50px; border-radius: var(--border-radius-sm); object-fit: contain;">
+          Sacramento <span>Automóveis</span>
+        </a>
+        <h2>Acesso Administrativo</h2>
+        <p>Introduza as suas credenciais para gerir o stand.</p>
+      </div>
+      
+      <div class="login-error" id="login-error-msg">Credenciais erradas!</div>
+
+      <form id="admin-login-form" class="login-form">
+        <div class="form-group">
+          <label for="login-username" class="form-label">Utilizador</label>
+          <input type="text" id="login-username" class="form-input" placeholder="Ex: admin" required>
+        </div>
+        <div class="form-group">
+          <label for="login-password" class="form-label">Palavra-passe</label>
+          <input type="password" id="login-password" class="form-input" placeholder="Ex: *********" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">
+          Iniciar Sessão <i data-lucide="log-in"></i>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MAIN DASHBOARD CONTENT -->
+  <div id="admin-dashboard" style="display: none; min-height: 100vh; flex-direction: column;">
+    
+    <!-- HEADER -->
+    <header class="admin-header">
+      <div class="container admin-nav">
+        <div class="admin-title-row">
+          <a href="index.html" class="logo">
+            <img src="img/logo.jpg" alt="Logo Sacramento" style="height: 40px; border-radius: var(--border-radius-sm); object-fit: contain;">
+            Sacramento <span>Automóveis</span>
+          </a>
+          <span class="admin-badge">Vendedor <i data-lucide="shield-check" style="width: 12px; height: 12px; display: inline; vertical-align: middle;"></i></span>
+        </div>
+        
+        <button id="btn-logout" class="btn btn-secondary" style="padding: 8px 16px; font-size: 13px;">
+          Terminar Sessão <i data-lucide="log-out"></i>
+        </button>
+      </div>
+    </header>
+
+    <main class="container" style="flex-grow: 1; padding-bottom: 60px;">
+      
+      <!-- NAV TABS -->
+      <div class="admin-tabs">
+        <button class="admin-tab-btn active" id="tab-btn-stock">
+          <i data-lucide="car" style="width: 16px; height: 16px; display: inline; vertical-align: middle; margin-right: 6px;"></i> Gerir Stock
+        </button>
+        <button class="admin-tab-btn" id="tab-btn-messages">
+          <i data-lucide="mail" style="width: 16px; height: 16px; display: inline; vertical-align: middle; margin-right: 6px;"></i> Mensagens
+          <span id="unread-messages-badge" style="background-color: #ef4444; color: white; border-radius: 50%; padding: 2px 6px; font-size: 10px; font-weight: 700; margin-left: 6px; display: none;">0</span>
+        </button>
+      </div>
+
+      <!-- PANEL: STOCK MANAGEMENT -->
+      <section class="admin-panel-content active" id="panel-stock">
+        <div class="panel-header-row">
+          <h2>Lista de Viaturas</h2>
+          <button id="btn-add-car" class="btn btn-primary">
+            <i data-lucide="plus-circle"></i> Adicionar Viatura
+          </button>
+        </div>
+
+        <div class="admin-table-container">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Automóvel</th>
+                <th>Ano</th>
+                <th>Combustível</th>
+                <th>Caixa</th>
+                <th>Quilómetros</th>
+                <th>Preço</th>
+                <th style="width: 120px;">Ações</th>
+              </tr>
+            </thead>
+            <tbody id="admin-cars-tbody">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- PANEL: INBOX MESSAGES -->
+      <section class="admin-panel-content" id="panel-messages">
+        <div class="panel-header-row">
+          <h2>Mensagens de Clientes</h2>
+        </div>
+
+        <div class="admin-table-container">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Estado</th>
+                <th>Cliente</th>
+                <th>Automóvel de Interesse</th>
+                <th>Mensagem</th>
+                <th>Data</th>
+                <th style="width: 160px;">Ações</th>
+              </tr>
+            </thead>
+            <tbody id="admin-messages-tbody">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ADD / EDIT VEHICLE MODAL -->
+  <div class="admin-modal" id="car-form-modal">
+    <div class="admin-modal-container">
+      
+      <div class="admin-modal-header">
+        <h3 id="car-modal-title">Adicionar Nova Viatura</h3>
+        <button class="admin-modal-close" id="btn-close-car-modal"><i data-lucide="x"></i></button>
+      </div>
+      
+      <form id="vehicle-management-form">
+        <input type="hidden" id="form-car-id" value="">
+        
+        <div class="admin-modal-body">
+          <div id="form-error-msg" style="background-color: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); color: #ef4444; padding: 12px; border-radius: var(--border-radius-md); margin-bottom: 20px; font-size: 14px; display: none;">
+            Preencha todos os campos obrigatórios.
+          </div>
+
+          <!-- Brand & Model -->
+          <div class="form-row">
+            <div class="form-group">
+              <label for="form-brand" class="form-label">Marca *</label>
+              <input type="text" id="form-brand" class="form-input" placeholder="Ex: BMW" required>
+            </div>
+            <div class="form-group">
+              <label for="form-model" class="form-label">Modelo *</label>
+              <input type="text" id="form-model" class="form-input" placeholder="Ex: Série 3" required>
+            </div>
+          </div>
+
+          <!-- Version & Color -->
+          <div class="form-row">
+            <div class="form-group">
+              <label for="form-version" class="form-label">Versão / Detalhes</label>
+              <input type="text" id="form-version" class="form-input" placeholder="Ex: 320d M Sport">
+            </div>
+            <div class="form-group">
+              <label for="form-color" class="form-label">Cor Exterior</label>
+              <input type="text" id="form-color" class="form-input" placeholder="Ex: Preto Metalizado">
+            </div>
+          </div>
+
+          <!-- Price, Year, KMS -->
+          <div class="form-row">
+            <div class="form-group">
+              <label for="form-price" class="form-label">Preço (€) *</label>
+              <input type="number" id="form-price" class="form-input" placeholder="Ex: 34500" required>
+            </div>
+            <div class="form-group">
+              <label for="form-year" class="form-label">Ano de Registo *</label>
+              <input type="number" id="form-year" class="form-input" placeholder="Ex: 2021" required>
+            </div>
+            <div class="form-group">
+              <label for="form-mileage" class="form-label">Quilómetros *</label>
+              <input type="number" id="form-mileage" class="form-input" placeholder="Ex: 45000" required>
+            </div>
+          </div>
+
+          <!-- Engine specs -->
+          <div class="form-row">
+            <div class="form-group">
+              <label for="form-fuel" class="form-label">Combustível *</label>
+              <select id="form-fuel" class="form-input" required>
+                <option value="">Selecionar...</option>
+                <option value="Gasolina">Gasolina</option>
+                <option value="Diesel">Diesel</option>
+                <option value="Elétrico">Elétrico</option>
+                <option value="Híbrido">Híbrido</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="form-transmission" class="form-label">Transmissão *</label>
+              <select id="form-transmission" class="form-input" required>
+                <option value="">Selecionar...</option>
+                <option value="Manual">Manual</option>
+                <option value="Automática">Automática</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Power & Capacity -->
+          <div class="form-row">
+            <div class="form-group">
+              <label for="form-power" class="form-label">Potência (cv)</label>
+              <input type="number" id="form-power" class="form-input" placeholder="Ex: 190">
+            </div>
+            <div class="form-group">
+              <label for="form-engine" class="form-label">Cilindrada (cc)</label>
+              <input type="number" id="form-engine" class="form-input" placeholder="Ex: 1995">
+            </div>
+          </div>
+
+          <!-- Description -->
+          <div class="form-group">
+            <label for="form-description" class="form-label">Descrição Comercial</label>
+            <textarea id="form-description" class="form-input" placeholder="Detalhes de garantia, estado do carro, etc."></textarea>
+          </div>
+
+          <!-- Features Checklist -->
+          <div class="form-group">
+            <label class="form-label">Equipamento Extra</label>
+            <div class="features-checkbox-grid" id="form-features-grid">
+              <label class="checkbox-label"><input type="checkbox" value="GPS / Sistema de Navegação"> GPS / Navegação</label>
+              <label class="checkbox-label"><input type="checkbox" value="Estofos em Pele"> Estofos em Pele</label>
+              <label class="checkbox-label"><input type="checkbox" value="Tecto de Abrir Panorâmico"> Tecto de Abrir</label>
+              <label class="checkbox-label"><input type="checkbox" value="Faróis LED de Alta Performance"> Faróis LED</label>
+              <label class="checkbox-label"><input type="checkbox" value="Sensores de Estacionamento (F/T)"> Sensores Estacionamento</label>
+              <label class="checkbox-label"><input type="checkbox" value="Câmara Auxiliar Traseira"> Câmara Traseira</label>
+              <label class="checkbox-label"><input type="checkbox" value="Ar Condicionado Automático Dual-Zone"> AC Automático</label>
+              <label class="checkbox-label"><input type="checkbox" value="Jantes de Liga Leve Especial"> Jantes Liga Leve</label>
+              <label class="checkbox-label"><input type="checkbox" value="Cruise Control Adaptativo"> Cruise Control</label>
+              <label class="checkbox-label"><input type="checkbox" value="Bluetooth & Kit Mãos Livres"> Bluetooth</label>
+              <label class="checkbox-label"><input type="checkbox" value="Android Auto / Apple CarPlay"> Apple/Android Link</label>
+              <label class="checkbox-label"><input type="checkbox" value="Bancos Aquecidos"> Bancos Aquecidos</label>
+              <label class="checkbox-label"><input type="checkbox" value="Painel de Instrumentos Digital"> Cockpit Digital</label>
+              <label class="checkbox-label"><input type="checkbox" value="Chave de Acesso Inteligente (Keyless)"> Acesso Keyless</label>
+            </div>
+          </div>
+
+          <!-- Image Upload Block -->
+          <div class="form-group">
+            <label class="form-label">Fotos da Viatura * (Adicione até 10 fotos)</label>
+            <div class="file-upload-zone" id="upload-dropzone">
+              <i data-lucide="upload-cloud" style="width: 32px; height: 32px;"></i>
+              <p>Arraste e solte fotos aqui ou clique para procurar no computador</p>
+              <span>Permitido apenas JPEG, JPG, PNG, WEBP e GIF (Máx. 5MB cada)</span>
+              <input type="file" id="form-images-input" multiple accept="image/*" style="display: none;">
+            </div>
+            
+            <!-- Existing images (only shown during edit) -->
+            <div id="existing-images-label" style="display: none; font-size: 13px; font-weight: 500; margin-top: 16px; margin-bottom: 8px; color: var(--text-secondary);">Fotos Atuais:</div>
+            <div class="image-previews-container" id="existing-images-preview"></div>
+            
+            <!-- Newly staged images -->
+            <div id="new-images-label" style="display: none; font-size: 13px; font-weight: 500; margin-top: 16px; margin-bottom: 8px; color: var(--text-secondary);">Novas Fotos a Carregar:</div>
+            <div class="image-previews-container" id="new-images-preview"></div>
+          </div>
+
+        </div>
+
+        <div class="admin-modal-footer">
+          <button type="button" class="btn btn-secondary" id="btn-cancel-car-modal">Cancelar</button>
+          <button type="submit" class="btn btn-primary" id="btn-submit-car-form">Guardar Viatura</button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- VIEW MESSAGE MODAL -->
+  <div class="admin-modal" id="message-detail-modal">
+    <div class="admin-modal-container" style="max-width: 550px;">
+      <div class="admin-modal-header">
+        <h3>Detalhe do Contacto</h3>
+        <button class="admin-modal-close" id="btn-close-msg-modal"><i data-lucide="x"></i></button>
+      </div>
+      <div class="admin-modal-body inquiry-detail-modal-body">
+        <p><strong>Nome:</strong> <span id="msg-detail-name">Nome</span></p>
+        <p><strong>Email:</strong> <span id="msg-detail-email">Email</span></p>
+        <p><strong>Contacto:</strong> <span id="msg-detail-phone">Telefone</span></p>
+        <p><strong>Data de Receção:</strong> <span id="msg-detail-date">Data</span></p>
+        <p><strong>Referência de Viatura:</strong> <span id="msg-detail-car">Nenhuma</span></p>
+        <div>
+          <strong>Mensagem:</strong>
+          <div class="inquiry-message-content" id="msg-detail-text">Corpo do texto...</div>
+        </div>
+      </div>
+      <div class="admin-modal-footer">
+        <button type="button" class="btn btn-secondary" id="btn-close-msg-modal-footer">Fechar</button>
+        <button type="button" class="btn btn-primary" id="btn-reply-email"><i data-lucide="mail"></i> Responder por Email</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Script logic -->
+  <script src="js/admin.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>
