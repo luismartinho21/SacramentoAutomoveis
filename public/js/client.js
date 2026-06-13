@@ -31,6 +31,16 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Nav Links Active Toggle
+  const navLinks = document.querySelectorAll('header nav a');
+  navLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+      if (link.getAttribute('href') === 'admin.html') return;
+      navLinks.forEach(l => l.classList.remove('active'));
+      link.classList.add('active');
+    });
+  });
+
   // Gallery Navigation
   document.getElementById('gallery-prev').addEventListener('click', prevImage);
   document.getElementById('gallery-next').addEventListener('click', nextImage);
