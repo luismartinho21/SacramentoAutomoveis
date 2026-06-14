@@ -200,6 +200,11 @@ a {
   box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.15);
 }
 
+select option {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
 textarea.form-input {
   min-height: 120px;
   resize: vertical;
