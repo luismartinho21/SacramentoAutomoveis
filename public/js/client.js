@@ -31,13 +31,34 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Nav Links Active Toggle
+  // Mobile Menu Toggle
+  const menuToggle = document.getElementById('menu-toggle');
+  const nav = document.querySelector('header nav');
+  if (menuToggle && nav) {
+    menuToggle.addEventListener('click', () => {
+      nav.classList.toggle('open');
+      const isOpen = nav.classList.contains('open');
+      menuToggle.innerHTML = isOpen ? '<i data-lucide="x"></i>' : '<i data-lucide="menu"></i>';
+      lucide.createIcons();
+    });
+  }
+
+  // Nav Links Active Toggle & Auto Close Menu
   const navLinks = document.querySelectorAll('header nav a');
   navLinks.forEach(link => {
     link.addEventListener('click', (e) => {
       if (link.getAttribute('href') === 'admin.html') return;
       navLinks.forEach(l => l.classList.remove('active'));
       link.classList.add('active');
+      
+      // Auto close mobile menu drawer when clicking navigation link
+      if (nav && nav.classList.contains('open')) {
+        nav.classList.remove('open');
+        if (menuToggle) {
+          menuToggle.innerHTML = '<i data-lucide="menu"></i>';
+          lucide.createIcons();
+        }
+      }
     });
   });
 

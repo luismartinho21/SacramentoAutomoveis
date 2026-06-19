@@ -258,11 +258,39 @@ nav a:hover, nav a.active {
   font-size: 13px;
 }
 
+/* Menu Toggle Button (hidden by default on desktop) */
+.menu-toggle {
+  display: none;
+}
+
+/* Responsive Grid Layouts (replaces inline grid styles) */
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+}
+
+.about-stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  border-top: 1px solid var(--border-color);
+  padding-top: 30px;
+}
+
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 60px;
+  align-items: start;
+}
+
 /* Responsive Header */
 @media (max-width: 768px) {
   header .container {
     height: 70px;
-    padding: 0 16px;
+    padding: 0 20px;
   }
   
   .logo {
@@ -273,37 +301,111 @@ nav a:hover, nav a.active {
     height: 32px;
   }
   
+  /* Hamburger button styling */
+  .menu-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    z-index: 1001; /* Above mobile drawer */
+    transition: var(--transition-fast);
+  }
+  .menu-toggle:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--accent);
+  }
+  
+  /* Mobile Menu Drawer */
   nav {
-    gap: 16px;
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 280px;
+    height: 100vh;
+    background: rgba(20, 20, 23, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-left: 1px solid var(--border-color);
+    box-shadow: var(--shadow-lg);
+    display: flex;
+    flex-direction: column;
+    padding: 90px 24px 40px 24px;
+    gap: 20px;
+    transition: right var(--transition-normal);
+    z-index: 1000;
+  }
+  
+  nav.open {
+    right: 0;
   }
   
   nav a {
-    font-size: 13.5px;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    width: 100%;
   }
   
-  .btn-seller {
-    padding: 8px;
-    border-radius: 50%;
-    width: 36px;
-    height: 36px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+  nav a:hover, nav a.active {
+    color: var(--accent);
   }
   
-  .btn-seller span {
-    display: none;
+  /* Seller button in mobile drawer */
+  nav .btn-seller {
+    width: 100% !important;
+    height: 46px !important;
+    border-radius: var(--border-radius-md) !important;
+    padding: 12px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background-color: var(--accent) !important;
+    color: #000 !important;
+    border: none !important;
+    margin-top: 10px;
+    box-shadow: 0 4px 12px rgba(212, 175, 55, 0.15);
   }
   
-  .btn-seller i, .btn-seller svg {
-    margin: 0;
+  nav .btn-seller span {
+    display: inline !important;
+    font-size: 14px;
+    font-weight: 700;
+  }
+  
+  nav .btn-seller i, nav .btn-seller svg {
+    margin-right: 8px;
+    color: #000 !important;
+  }
+  
+  /* Grid Layout responsive wrapping */
+  .about-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  
+  .about-stats-grid {
+    gap: 16px;
+    padding-top: 24px;
+  }
+  
+  .contact-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
   }
 }
 
 @media (max-width: 480px) {
   header .container {
     height: 60px;
-    padding: 0 10px;
+    padding: 0 16px;
   }
   
   .logo {
@@ -315,16 +417,7 @@ nav a:hover, nav a.active {
   }
   
   nav {
-    gap: 10px;
-  }
-  
-  nav a {
-    font-size: 12px;
-  }
-  
-  .btn-seller {
-    width: 32px;
-    height: 32px;
+    width: 100%; /* Full screen drawer on extra small screens */
   }
 }
 
