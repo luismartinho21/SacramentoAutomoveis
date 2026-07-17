@@ -428,8 +428,17 @@
         </div>
         <div class="footer-col">
           <h3>Informação Legal</h3>
-          <p style="font-size: 13px; margin-bottom: 12px;">Intermediário de Crédito a título acessório registado no Banco de Portugal sob o nº 000000.</p>
-          <p style="font-size: 13px;">Preços com IVA incluído à taxa legal em vigor.</p>
+          <ul>
+            <li><a href="politica-privacidade.html">Política de Privacidade</a></li>
+            <li><a href="politica-cookies.html">Política de Cookies</a></li>
+            <li><a href="resolucao-litigios.html">Resolução de Litígios (RAL)</a></li>
+            <li style="margin-top: 8px;">
+              <a href="https://www.livrodereclamacoes.pt" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 8px; font-size: 13px; padding: 6px 12px; border: 1px solid rgba(255,255,255,0.07); border-radius: var(--border-radius-sm); background-color: rgba(255,255,255,0.02); color: var(--text-primary);">
+                <i data-lucide="book-open" style="width: 14px; height: 14px; color: var(--accent);"></i> Livro de Reclamações
+              </a>
+            </li>
+          </ul>
+          <p style="font-size: 12px; margin-top: 12px; color: var(--text-muted);">Preços com IVA incluído à taxa legal em vigor.</p>
         </div>
       </div>
       
@@ -438,6 +447,20 @@
       </div>
     </div>
   </footer>
+
+  <!-- Cookie Consent Banner -->
+  <div id="cookie-banner" class="cookie-banner hidden">
+    <div class="cookie-banner-content">
+      <div class="cookie-banner-text">
+        <h4><i data-lucide="cookie" class="cookie-icon" style="display: inline-block; vertical-align: middle; margin-right: 6px; width: 18px; height: 18px; color: var(--accent);"></i> Consentimento de Cookies</h4>
+        <p>Utilizamos cookies para personalizar anúncios e analisar o nosso tráfego, garantindo uma melhor experiência no nosso website. Ao clicar em "Aceitar Tudo", concorda com o uso de todos os cookies. Pode consultar a nossa <a href="politica-cookies.html">Política de Cookies</a> para saber mais.</p>
+      </div>
+      <div class="cookie-banner-actions">
+        <button id="cookie-reject" class="btn btn-secondary">Rejeitar</button>
+        <button id="cookie-accept" class="btn btn-primary">Aceitar Tudo</button>
+      </div>
+    </div>
+  </div>
 
   <!-- Scripts -->
   <script src="js/client.js"></script>

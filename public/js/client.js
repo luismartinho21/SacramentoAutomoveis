@@ -5,6 +5,7 @@ let currentImageIndex = 0;
 document.addEventListener('DOMContentLoaded', () => {
   loadFilters();
   loadCars();
+  initCookieBanner();
 
   // Filter Event Listeners
   document.getElementById('btn-apply-filters').addEventListener('click', applyFilters);
@@ -482,4 +483,30 @@ async function handleGeneralContact(e) {
   } finally {
     submitBtn.disabled = false;
   }
+}
+
+// Initialize Cookie Consent Banner
+function initCookieBanner() {
+  const banner = document.getElementById('cookie-banner');
+  const acceptBtn = document.getElementById('cookie-accept');
+  const rejectBtn = document.getElementById('cookie-reject');
+
+  if (!banner || !acceptBtn || !rejectBtn) return;
+
+  const consent = localStorage.getItem('cookie-consent');
+
+  // If no consent has been given yet, show the banner
+  if (!consent) {
+    banner.classList.remove('hidden');
+  }
+
+  acceptBtn.addEventListener('click', () => {
+    localStorage.setItem('cookie-consent', 'accepted');
+    banner.classList.add('hidden');
+  });
+
+  rejectBtn.addEventListener('click', () => {
+    localStorage.setItem('cookie-consent', 'rejected');
+    banner.classList.add('hidden');
+  });
 }
